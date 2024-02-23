@@ -15,9 +15,14 @@
     </div>
 
     @if ($message = Session::get('success'))
-        <div class="alert alert-success">
+        <div id="success-message" class="alert alert-success">
             <p>{{ $message }}</p>
         </div>
+        <script>
+            setTimeout(function() {
+                $('#success-message').fadeOut('slow');
+            }, 3000); // 3 seconds
+        </script>
     @endif
 
     <div class="row mb-3">

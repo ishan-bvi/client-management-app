@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -16,7 +18,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::latest()->get();
 
             $states = User::select('state')
                 ->distinct('state')
@@ -28,6 +30,7 @@ class UserController extends Controller
 
             return view('users.index', compact('users', 'states', 'cities'));
         } catch (\Exception $e) {
+            Log::error('Failed to fetch users: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to fetch users.');
         }
     }
@@ -48,27 +51,23 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
 
-            $user = new User();
-            $user->fill($request->validated());
+            $user = new User($request->validated());
             $user->password = bcrypt($request->pass);
+            $user->url = $request->url;
             $user->save();
 
             DB::commit();
 
-            return redirect()->route('users.index')
-                ->with('success', 'Client created successfully.');
+            return redirect()->route('users.index')->with('success', 'Client created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to create client: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to create client.');
         }
     }
 
     /**
      * Method states
-     *
-     * @param Request $request [explicite description]
-     *
-     * @return void
      */
     public function states(Request $request)
     {
@@ -80,16 +79,13 @@ class UserController extends Controller
 
             return response()->json($states);
         } catch (\Exception $e) {
+            Log::error('Failed to fetch states: ' . $e->getMessage());
             return response()->json([], 500);
         }
     }
 
     /**
      * Method cities
-     *
-     * @param Request $request [explicite description]
-     *
-     * @return void
      */
     public function cities(Request $request)
     {
@@ -101,6 +97,7 @@ class UserController extends Controller
 
             return response()->json($cities);
         } catch (\Exception $e) {
+            Log::error('Failed to fetch cities: ' . $e->getMessage());
             return response()->json([], 500);
         }
     }
@@ -124,30 +121,20 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         try {
             DB::beginTransaction();
 
             $user = User::findOrFail($id);
-
-            $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email,' . $user->id,
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator);
-            }
-
-            $user->update($request->all());
+            $user->update($request->validated());
 
             DB::commit();
 
-            return redirect()->route('users.index')
-                ->with('success', 'Client updated successfully');
+            return redirect()->route('users.index')->with('success', 'Client updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to update client: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to update client.');
         }
     }
@@ -164,10 +151,10 @@ class UserController extends Controller
 
             DB::commit();
 
-            return redirect()->route('users.index')
-                ->with('success', 'Client deleted successfully');
+            return redirect()->route('users.index')->with('success', 'Client deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to delete client: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to delete client.');
         }
     }

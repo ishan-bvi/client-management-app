@@ -67,12 +67,12 @@
                 <div class="form-group">
                     <strong>Gender:</strong><br>
                     <label class="radio-inline">
-                        <input type="radio" name="gender" value="male"
-                            @if (old('gender') == 'male') checked @endif> Male
+                        <input type="radio" name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+                        Male
                     </label>
                     <label class="radio-inline">
                         <input type="radio" name="gender" value="female"
-                            @if (old('gender') == 'female') checked @endif> Female
+                            {{ old('gender') == 'female' ? 'checked' : '' }}> Female
                     </label>
                     <br>
                     @error('gender')
@@ -84,7 +84,7 @@
                     <strong>State:</strong>
                     <input type="text" id="autocomplete-state" name="state" class="form-control" placeholder="State"
                         value="{{ old('state') }}">
-                    <div id="state-suggestions"></div>
+                    <div id="state-suggestions" style="max-height: 200px; overflow-y: auto;"></div>
                     @error('state')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -94,7 +94,7 @@
                     <strong>City:</strong>
                     <input type="text" id="autocomplete-city" name="city" class="form-control" placeholder="City"
                         value="{{ old('city') }}">
-                    <div id="city-suggestions"></div>
+                    <div id="city-suggestions" style="max-height: 200px; overflow-y: auto;"></div>
                     @error('city')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -106,6 +106,11 @@
                     @error('address')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
+                </div>
+
+                <div class="form-group">
+                    <strong>Video Url:</strong>
+                    <input type="text" name="url" class="form-control" placeholder="url">
                 </div>
             </div>
         </div>

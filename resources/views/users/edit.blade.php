@@ -49,8 +49,7 @@
 
                 <div class="form-group">
                     <strong>Password:</strong>
-                    <input type="password" name="password" class="form-control" value="{{ $user->password }}"
-                        placeholder="Password" disabled>
+                    <input type="password" name="password" class="form-control" placeholder="Password">
                     @error('password')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -58,9 +57,8 @@
 
                 <div class="form-group">
                     <strong>Confirm Password:</strong>
-                    <input type="password" name="confirm_password" class="form-control" value="{{ $user->password }}"
-                        placeholder="Confirm Password" disabled>
-                    @error('confirm_password')
+                    <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password">
+                    @error('password_confirmation')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
@@ -109,6 +107,12 @@
                     @error('address')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
+                </div>
+
+                <div class="form-group">
+                    <strong>Video Url:</strong>
+                    <input type="text" name="url" class="form-control" value="{{ $user->url }}" placeholder="url"
+                        disabled>
                 </div>
 
             </div>

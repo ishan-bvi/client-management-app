@@ -25,6 +25,22 @@
                         <li class="list-group-item"><strong>State:</strong> {{ $user->state }}</li>
                         <li class="list-group-item"><strong>City:</strong> {{ $user->city }}</li>
                         <li class="list-group-item"><strong>Address:</strong> {{ $user->address }}</li>
+                        <li class="list-group-item"><strong>Youtube Video:</strong>
+                            @php
+                                // Extract YouTube video ID from URL
+                                $videoUrl = $user->url;
+                                $queryString = parse_url($videoUrl, PHP_URL_QUERY);
+                                parse_str($queryString, $params);
+                                $videoId = isset($params['v']) ? $params['v'] : null;
+                            @endphp
+                            @if ($videoId)
+                                <iframe width="560" height="315"
+                                    src="https://www.youtube.com/embed/{{ $videoId }}" frameborder="0"
+                                    allowfullscreen></iframe>
+                            @else
+                                <p>Invalid YouTube video URL</p>
+                            @endif
+                        </li>
                     </ul>
                 </div>
             </div>

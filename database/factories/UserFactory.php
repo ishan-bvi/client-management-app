@@ -31,6 +31,7 @@ class UserFactory extends Factory
             'state' => fake()->state(),
             'city' => fake()->city(),
             'address' => fake()->address(),
+            'url' => "https://www.youtube.com/watch?v=0OWk9MABqUw&t=1439s&ab_channel=YogicalMind",
             'password' => static::$password ??= Hash::make('password'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
